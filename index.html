@@ -1,0 +1,727 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>IPS Ôn giữa kỳ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrow column; each question is a cheque-book leaf — a stub on the left (number, lesson) torn off by a dashed perforation from the body */
+:root{
+  --bg:#EFF2EF; --surface:#FFFFFF; --sunk:#F6F8F6; --ink:#13201F; --muted:#5A6967; --line:#D3DBD7;
+  --accent:#0D5D56; --accent-ink:#FFFFFF; --accent-soft:#DDECE8;
+  --ok:#1C7340; --ok-soft:#E2F2E7; --bad:#B0281F; --bad-soft:#FBE6E3; --warn:#8A5A00; --warn-soft:#FBF0D9;
+  --f-display:"Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-body:"Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1514; --surface:#162120; --sunk:#121B1A; --ink:#E4ECEA; --muted:#93A4A0; --line:#2A3836;
+  --accent:#5BC1B2; --accent-ink:#06201D; --accent-soft:#17332F;
+  --ok:#62C886; --ok-soft:#14301F; --bad:#F08A7F; --bad-soft:#3A1D1A; --warn:#E5B256; --warn-soft:#33270F;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1514; --surface:#162120; --sunk:#121B1A; --ink:#E4ECEA; --muted:#93A4A0; --line:#2A3836;
+  --accent:#5BC1B2; --accent-ink:#06201D; --accent-soft:#17332F;
+  --ok:#62C886; --ok-soft:#14301F; --bad:#F08A7F; --bad-soft:#3A1D1A; --warn:#E5B256; --warn-soft:#33270F;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.25}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.opt:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:11px 20px;border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:15px;transition:background .15s,border-color .15s,transform .1s}
+.btn:hover{border-color:var(--accent)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--line)}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.spacer{flex:1}
+
+/* home */
+.hero{display:grid;gap:10px;margin-bottom:28px}
+.hero h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.02em}
+.hero p{margin:0;color:var(--muted);max-width:60ch}
+.section-label{margin:26px 0 10px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.modes{grid-template-columns:1fr}}
+.mode{display:grid;gap:6px;text-align:left;padding:18px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--surface);transition:border-color .15s,background .15s}
+.mode:hover{border-color:var(--muted)}
+.mode[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.mode .mt{font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
+.mode .dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--muted);flex:none;display:grid;place-items:center}
+.mode[aria-pressed="true"] .dot{border-color:var(--accent)}
+.mode[aria-pressed="true"] .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.mode .md{color:var(--muted);font-size:14px;line-height:1.5}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{padding:9px 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;font-size:14px}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.seg small{font-weight:500;color:var(--muted);margin-left:4px}
+.start-row{margin-top:26px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.start-row .note{color:var(--muted);font-size:13.5px;flex:1 1 240px}
+.essay-link{margin-top:36px;padding-top:22px;border-top:1px dashed var(--line);display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.essay-link p{margin:0;color:var(--muted);font-size:14px;flex:1 1 300px}
+
+/* quiz bar */
+.qbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 0 12px;margin-bottom:14px;display:grid;gap:10px}
+.qbar .row{gap:12px}
+.qbar .count{font-size:14px;color:var(--muted)}
+.qbar .count b{color:var(--ink)}
+.timer{font-size:14px;padding:4px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--line)}
+.timer.low{color:var(--bad);border-color:var(--bad)}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);letter-spacing:.02em}
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+.livescore{font-size:13px;color:var(--muted)}
+.livescore .ok{color:var(--ok);font-weight:700}.livescore .bad{color:var(--bad);font-weight:700}
+
+/* leaf (question card) */
+.leaf{display:grid;grid-template-columns:96px 1fr;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.stub{background:var(--sunk);border-right:2px dashed var(--line);padding:18px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.stub .no{font-family:var(--f-mono);font-weight:700;font-size:26px;line-height:1}
+.stub .of{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.stub .les{margin-top:8px;font-family:var(--f-mono);font-size:11px;font-weight:700;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:1px 6px}
+.stub .lesn{font-size:11px;color:var(--muted);line-height:1.35}
+.body{padding:20px 22px 22px;min-width:0}
+@media (max-width:560px){
+  .leaf{grid-template-columns:1fr}
+  .stub{flex-direction:row;justify-content:flex-start;border-right:0;border-bottom:2px dashed var(--line);padding:10px 16px;gap:10px;text-align:left}
+  .stub .no{font-size:18px}.stub .les{margin-top:0}
+  .body{padding:16px}
+}
+.qtext{font-size:18px;font-weight:600;line-height:1.5;margin:0 0 16px}
+.src{font-size:12px;color:var(--muted);margin:-8px 0 14px}
+
+.opts{display:grid;gap:10px}
+.opt{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;width:100%;text-align:left;padding:12px 14px;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);transition:border-color .12s,background .12s}
+.opt:hover:not([disabled]){border-color:var(--accent);background:var(--sunk)}
+.opt .lt{font-family:var(--f-mono);font-weight:700;width:30px;height:30px;border-radius:7px;display:grid;place-items:center;background:var(--sunk);border:1px solid var(--line);font-size:14px}
+.opt .tx{padding-top:3px;min-width:0}
+.opt .mk{font-weight:800;padding-top:3px;font-size:15px}
+.opt[disabled]{cursor:default}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .lt{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .lt{background:var(--ok);color:var(--surface);border-color:var(--ok)}
+.opt.right .mk{color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .lt{background:var(--bad);color:var(--surface);border-color:var(--bad)}
+.opt.wrong .mk{color:var(--bad)}
+.opt.dim{opacity:.7}
+
+/* feedback */
+.fb{margin-top:18px;border-top:1px solid var(--line);padding-top:16px;display:grid;gap:12px}
+.verdict{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
+.verdict .badge{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:15px;flex:none}
+.verdict.ok{color:var(--ok)}.verdict.ok .badge{background:var(--ok);color:var(--surface)}
+.verdict.bad{color:var(--bad)}.verdict.bad .badge{background:var(--bad);color:var(--surface)}
+.verdict.skip{color:var(--warn)}.verdict.skip .badge{background:var(--warn);color:var(--surface)}
+.ex{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:12px 14px;border-radius:9px;background:var(--sunk);border-left:4px solid var(--line)}
+.ex.right{border-left-color:var(--ok)}
+.ex.wrong{border-left-color:var(--bad)}
+.ex .tag{grid-column:1/-1;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.ex.right .tag{color:var(--ok)}.ex.wrong .tag{color:var(--bad)}
+.ex .l{font-family:var(--f-mono);font-weight:700}
+.ex .t{font-weight:600}
+.ex .e{grid-column:2;color:var(--ink);font-size:15px;min-width:0}
+.key{padding:12px 14px;border-radius:9px;background:var(--accent-soft);font-size:15px}
+.key b{color:var(--accent)}
+
+.nav{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.kbd{font-size:12px;color:var(--muted)}
+.kbd kbd{font-family:var(--f-mono);font-size:11px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface)}
+@media (hover:none){.kbd{display:none}}
+
+/* exam palette */
+.palette{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.palette .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px;margin-top:10px}
+.palette button{font-family:var(--f-mono);font-size:13px;font-weight:700;height:38px;border-radius:7px;border:1.5px solid var(--line);background:var(--surface)}
+.palette button.done{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.palette button.cur{outline:2px solid var(--ink);outline-offset:1px}
+.palette .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.palette .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;border:1.5px solid var(--line);margin-right:6px;vertical-align:-1px}
+.palette .legend .d::before{background:var(--accent-soft);border-color:var(--accent)}
+.confirm{margin-top:14px;padding:14px;border-radius:9px;background:var(--warn-soft);color:var(--ink);display:grid;gap:10px}
+.confirm b{color:var(--warn)}
+
+/* results */
+.score{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+@media (max-width:560px){.score{grid-template-columns:1fr;gap:16px}}
+.ring{width:132px;height:132px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1.1}
+.ring .v b{font-family:var(--f-display);font-size:32px;font-weight:800}
+.ring .v small{display:block;font-size:12px;color:var(--muted)}
+.stats{display:grid;gap:6px;min-width:0}
+.stats h2{font-size:24px;font-weight:800}
+.stats p{margin:0;color:var(--muted)}
+.stats .nums{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:6px;font-size:14px}
+.stats .nums b{font-family:var(--f-mono)}
+.bylesson{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:10px}
+.lrow{display:grid;grid-template-columns:150px 1fr 56px;gap:12px;align-items:center;font-size:14px}
+@media (max-width:480px){.lrow{grid-template-columns:110px 1fr 48px;font-size:13px}}
+.lrow .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.lrow .bar i{display:block;height:100%;background:var(--accent)}
+.lrow .n{text-align:right;font-family:var(--f-mono);font-size:13px}
+.res-actions{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px}
+.review-head{margin:30px 0 12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.review{display:grid;gap:14px}
+.empty{padding:20px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:var(--r)}
+
+/* essay */
+.essay{display:grid;gap:16px}
+.essay .prompt{font-size:15.5px}
+.essay .prompt p{margin:0 0 10px}
+.essay blockquote{margin:0 0 12px;padding:12px 14px;border-left:3px solid var(--accent);background:var(--sunk);border-radius:0 8px 8px 0;font-size:15px}
+.bill{font-family:var(--f-mono);font-size:13px;line-height:1.7;background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:14px;margin:0 0 12px;white-space:normal}
+.essay ol{margin:0 0 10px;padding-left:22px}
+.model{margin-top:12px;display:grid;gap:10px}
+.model .pt{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:12px 14px;border-radius:9px;background:var(--sunk);font-size:15px}
+.model .pt .k{font-family:var(--f-mono);font-weight:700;color:var(--accent)}
+.model .pt .s{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.model .pt div{min-width:0}
+.model .vn{font-size:14px;color:var(--muted);padding:0 4px}
+@media (max-width:480px){.model .pt{grid-template-columns:auto 1fr}.model .pt .s{grid-column:2}}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.fade{animation:fade .22s ease-out}
+@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+const LESSONS={L1:"Tổng quan & rủi ro",L2:"Pháp lý & hợp đồng",L3:"Chứng từ",L4:"Hối phiếu",L5:"Phương thức & hạ tầng"};
+
+/* Each question: id, set (A = Part A, X = bổ sung), l = lesson, q, o = [[option, why]], a = index of correct option, k = điều cần nhớ */
+const BANK=[
+{id:"A1",set:"A",l:"L1",q:`Which of the following is an international transaction but NOT international trade?`,o:[
+[`A Vietnamese firm exports coffee to Germany`,`Xuất khẩu hàng hóa qua biên giới là thương mại quốc tế (trade in goods) điển hình, nên vừa là international transaction vừa là international trade.`],
+[`A Singapore firm provides cross-border consulting services to a Vietnamese company`,`Dịch vụ tư vấn xuyên biên giới vẫn là thương mại quốc tế, cụ thể là trade in services. Nhiều bạn nghĩ "trade" chỉ có hàng hóa nên chọn nhầm câu này.`],
+[`A Korean company makes a direct investment in a factory in Vietnam`,`FDI là dòng vốn đầu tư qua biên giới, nên là giao dịch quốc tế. Nhưng nó không phải mua bán hàng hóa hay dịch vụ, vì vậy không phải international trade.`],
+[`A Vietnamese firm imports semiconductor chips from Taiwan`,`Nhập khẩu hàng hóa (chip) cũng là thương mại quốc tế, chỉ khác chiều so với xuất khẩu.`]],a:2,
+k:`International transaction gồm cả trade (hàng hóa + dịch vụ) và các dòng vốn như FDI, vay nợ. Trade chỉ là một phần của transaction.`},
+
+{id:"A2",set:"A",l:"L1",q:`Which of the following is classified as country (political) risk?`,o:[
+[`A foreign-exchange moratorium declared by the importer's government`,`Lệnh tạm hoãn thanh toán ngoại hối do chính phủ ban hành nằm ngoài tầm kiểm soát của người mua: người mua có tiền, muốn trả nhưng không được chuyển ngoại tệ ra nước ngoài. Đây là rủi ro quốc gia (transfer risk).`],
+[`The buyer becomes insolvent`,`Người mua mất khả năng thanh toán là rủi ro thương mại (commercial/credit risk), phát sinh từ chính đối tác chứ không phải từ chính phủ.`],
+[`The exporter ships non-conforming goods`,`Giao hàng không phù hợp hợp đồng là rủi ro thương mại phía người bán (performance risk), không liên quan đến hành động của nhà nước.`],
+[`The buyer delays payment because of a cash-flow shortage`,`Chậm trả vì thiếu dòng tiền là vấn đề nội bộ của người mua, nên là rủi ro thương mại.`]],a:0,
+k:`Country risk do hành động của nhà nước hoặc sự kiện cấp quốc gia (cấm chuyển ngoại tệ, chiến tranh, cấm vận). Commercial risk do chính đối tác gây ra.`},
+
+{id:"A3",set:"A",l:"L1",q:`A Vietnamese exporter invoices its buyer in EUR. If the EUR depreciates before payment is received, who suffers an unexpected loss?`,o:[
+[`The importer`,`Người nhập khẩu vẫn trả đúng số EUR đã ký. EUR mất giá không làm họ phải trả nhiều hơn, nếu có thì họ còn được lợi khi mua EUR rẻ hơn.`],
+[`The exporter`,`Người xuất khẩu nhận cùng số EUR nhưng khi đổi ra VND thì được ít hơn dự tính, nên chịu lỗ tỷ giá. Bên nhận ngoại tệ chịu rủi ro khi ngoại tệ đó mất giá.`],
+[`The carrier`,`Người vận chuyển không phải bên trong hợp đồng mua bán, cước phí của họ không phụ thuộc giá trị thanh toán tiền hàng.`],
+[`Neither party, because the contract price is fixed`,`Giá chỉ cố định bằng EUR, không cố định theo VND. Chính vì giá cố định bằng ngoại tệ nên bên nhận ngoại tệ gánh rủi ro tỷ giá.`]],a:1,
+k:`Ai nhận ngoại tệ thì sợ ngoại tệ mất giá; ai phải trả ngoại tệ thì sợ ngoại tệ lên giá.`},
+
+{id:"A4",set:"A",l:"L5",q:`Documentary collections (D/P and D/A) are governed by which set of ICC rules?`,o:[
+[`UCP 600`,`UCP 600 điều chỉnh thư tín dụng (L/C – documentary credits), không phải nhờ thu.`],
+[`CISG`,`CISG là công ước của Liên Hợp Quốc về hợp đồng mua bán hàng hóa quốc tế, không phải quy tắc ICC và không điều chỉnh nghiệp vụ nhờ thu.`],
+[`Incoterms 2020`,`Incoterms 2020 quy định nghĩa vụ giao hàng, chuyển rủi ro và chi phí giữa người mua và người bán, không quy định thanh toán.`],
+[`URC 522`,`URC 522 (Uniform Rules for Collections) là bộ quy tắc ICC dành cho nhờ thu, gồm cả D/P và D/A.`]],a:3,
+k:`URC 522 = nhờ thu. UCP 600 = L/C. URBPO 750 = BPO. Incoterms = giao hàng. CISG = hợp đồng mua bán.`},
+
+{id:"A5",set:"A",l:"L1",q:`An exporter pays its local supplier in advance. Production takes 2 months. The goods are then sold on Open Account 90 days from B/L date. The working capital cycle is approximately:`,o:[
+[`2 months`,`Chỉ tính thời gian sản xuất mà quên rằng sau khi giao hàng, người bán còn chờ thêm 90 ngày mới thu được tiền.`],
+[`3 months`,`Chỉ tính 90 ngày tín dụng cho người mua mà quên 2 tháng sản xuất, trong khi tiền đã trả cho nhà cung cấp từ đầu.`],
+[`5 months`,`Tiền ra từ lúc trả trước cho nhà cung cấp, tiền về sau khi hết hạn O/A. Tổng: 2 tháng sản xuất + 3 tháng (90 ngày) tín dụng = 5 tháng vốn bị chôn.`],
+[`6 months`,`Cộng thừa một tháng. Thời gian vận chuyển đã nằm trong 90 ngày vì kỳ hạn tính từ ngày B/L (tức ngày giao hàng), nên không cộng thêm giai đoạn nào khác.`]],a:2,
+k:`Chu kỳ vốn lưu động = từ lúc tiền ra (trả nhà cung cấp) đến lúc tiền về (người mua trả).`},
+
+{id:"A6",set:"A",l:"L2",q:`"Which court or tribunal has the authority to hear the dispute?" This question concerns:`,o:[
+[`Jurisdiction`,`Jurisdiction (thẩm quyền xét xử) trả lời câu hỏi tòa án hay trọng tài nào được quyền giải quyết tranh chấp.`],
+[`Governing law`,`Governing law trả lời câu hỏi luật nào được áp dụng để giải thích hợp đồng, không phải cơ quan nào xét xử. Hai khái niệm này rất hay bị nhầm.`],
+[`Force majeure`,`Force majeure là điều khoản bất khả kháng, miễn trách nhiệm khi có sự kiện ngoài tầm kiểm soát (thiên tai, chiến tranh...).`],
+[`Consideration`,`Consideration (đối giá) là yếu tố để hợp đồng có hiệu lực trong hệ thống Common Law, không liên quan đến việc chọn tòa.`]],a:0,
+k:`Tòa nào xử = jurisdiction. Luật nào áp dụng = governing law.`},
+
+{id:"A7",set:"A",l:"L2",q:`Which statement best describes the Civil Law system?`,o:[
+[`It is developed mainly from judicial precedents (stare decisis)`,`Phát triển từ án lệ (stare decisis) là đặc điểm của Common Law (Anh, Mỹ...).`],
+[`It uses inductive reasoning from specific cases`,`Suy luận quy nạp từ các vụ việc cụ thể là cách lập luận của Common Law. Civil Law dùng suy luận diễn dịch từ quy định chung trong bộ luật.`],
+[`Consideration is generally required for a valid contract`,`Yêu cầu consideration để hợp đồng có hiệu lực là học thuyết của Common Law.`],
+[`It is based mainly on written codes, and contracts tend to be shorter`,`Civil Law (Pháp, Đức, Việt Nam...) dựa trên bộ luật thành văn. Vì luật đã quy định sẵn nhiều điều, hợp đồng thường ngắn hơn hợp đồng theo Common Law.`]],a:3,
+k:`Civil Law: bộ luật thành văn, diễn dịch, hợp đồng ngắn. Common Law: án lệ, quy nạp, consideration, hợp đồng dài.`},
+
+{id:"A8",set:"A",l:"L2",q:`A buyer replies to an offer: "We accept your offer, but payment will be made 90 days after B/L date instead of at sight." Under the CISG, this reply is:`,o:[
+[`A valid acceptance`,`Chấp nhận phải khớp với chào hàng. Thay đổi điều khoản thanh toán là sửa đổi cơ bản (material alteration) theo CISG Art. 19(3), nên đây không còn là chấp nhận.`],
+[`A rejection and a counter-offer`,`Theo CISG Art. 19, trả lời có ý chấp nhận nhưng sửa đổi cơ bản (giá, thanh toán, chất lượng, số lượng, địa điểm và thời gian giao hàng...) được coi là từ chối chào hàng và đồng thời là một chào hàng mới (counter-offer).`],
+[`A fundamental breach`,`Fundamental breach (CISG Art. 25) là vi phạm một hợp đồng đã có hiệu lực. Ở đây hợp đồng chưa được hình thành nên không có gì để vi phạm.`],
+[`A void contract`,`Chưa có hợp đồng nào để bị vô hiệu. Các bên mới đang ở giai đoạn chào hàng và đàm phán.`]],a:1,
+k:`Sửa điều khoản thanh toán khi trả lời chào hàng = counter-offer, quyền quyết định quay lại bên chào hàng ban đầu.`},
+
+{id:"A9",set:"A",l:"L2",q:`According to CISG Article 11, a contract for the international sale of goods:`,o:[
+[`Must be concluded in writing`,`CISG Art. 11 không bắt buộc hình thức văn bản. (Một số nước bảo lưu theo Art. 96 để yêu cầu văn bản, nhưng đó là ngoại lệ, không phải quy định của Art. 11.)`],
+[`May be proved by any means, including witnesses`,`Art. 11: hợp đồng không cần lập hoặc chứng minh bằng văn bản và có thể được chứng minh bằng mọi cách, kể cả nhân chứng.`],
+[`Must be registered with a Chamber of Commerce`,`CISG không có yêu cầu đăng ký hợp đồng với Phòng Thương mại hay bất kỳ cơ quan nào.`],
+[`Requires consideration to be valid`,`Consideration là khái niệm của Common Law, CISG không đòi hỏi.`]],a:1,
+k:`CISG Art. 11 = tự do hình thức: hợp đồng có thể bằng lời nói, chứng minh bằng mọi cách.`},
+
+{id:"A10",set:"A",l:"L2",q:`A contract entered into with a mentally ill person is generally:`,o:[
+[`Void`,`Void là vô hiệu ngay từ đầu, như chưa từng tồn tại (ví dụ đối tượng không tồn tại). Hợp đồng với người tâm thần không tự động vô hiệu.`],
+[`Unenforceable`,`Unenforceable là hợp đồng có hiệu lực nhưng không kiện ra tòa được vì lý do kỹ thuật, ví dụ hết thời hiệu khởi kiện hoặc thiếu hình thức bắt buộc.`],
+[`Voidable`,`Hợp đồng với người thiếu năng lực (người chưa thành niên, người tâm thần) là voidable: vẫn có hiệu lực, nhưng bên được pháp luật bảo vệ có quyền lựa chọn hủy bỏ hoặc tiếp tục.`],
+[`Illegal`,`Illegal là hợp đồng có nội dung hoặc mục đích trái pháp luật. Ở đây nội dung không trái luật, vấn đề nằm ở năng lực của một bên.`]],a:2,
+k:`Void = vô hiệu từ đầu. Voidable = một bên có quyền hủy. Unenforceable = có hiệu lực nhưng không kiện được. Illegal = trái luật.`},
+
+{id:"A11",set:"A",l:"L3",q:`Under URC 522, which of the following is a financial document?`,o:[
+[`Bill of exchange`,`URC 522 Art. 2 định nghĩa financial documents là hối phiếu (bill of exchange), lệnh phiếu (promissory note), séc (cheque) và các công cụ tương tự dùng để thu tiền.`],
+[`Bill of lading`,`B/L là chứng từ vận tải, thuộc nhóm commercial documents.`],
+[`Commercial invoice`,`Hóa đơn thương mại thuộc nhóm commercial documents, đúng như tên gọi.`],
+[`Certificate of origin`,`C/O chứng nhận xuất xứ hàng hóa, thuộc nhóm commercial documents.`]],a:0,
+k:`Financial documents = công cụ đòi tiền (B/E, P/N, cheque). Commercial documents = mọi chứng từ còn lại (invoice, B/L, C/O, packing list...).`},
+
+{id:"A12",set:"A",l:"L3",q:`Which of the following is NOT a function of a Bill of Lading?`,o:[
+[`Receipt of goods`,`Đây là một chức năng của B/L: biên lai xác nhận người vận chuyển đã nhận hàng.`],
+[`Evidence of the contract of carriage`,`Đây là một chức năng của B/L: bằng chứng của hợp đồng vận chuyển giữa người gửi hàng và hãng tàu.`],
+[`Document of title`,`Đây là một chức năng của B/L: chứng từ sở hữu hàng hóa, ai cầm B/L gốc hợp lệ thì có quyền nhận hàng.`],
+[`Guarantee that the buyer will pay`,`B/L do hãng tàu phát hành, chỉ liên quan đến hàng hóa và việc vận chuyển. Nó không bảo đảm người mua sẽ trả tiền; đó là việc của L/C hoặc bảo lãnh ngân hàng.`]],a:3,
+k:`B/L có đúng 3 chức năng: receipt of goods, evidence of contract of carriage, document of title.`},
+
+{id:"A13",set:"A",l:"L3",q:`Which statement about a Sea Waybill is correct?`,o:[
+[`It is a document of title transferable by endorsement`,`Chuyển nhượng bằng ký hậu là đặc điểm của B/L theo lệnh (order B/L). Sea waybill không phải chứng từ sở hữu.`],
+[`Cargo is released only against an original`,`Giao hàng khi xuất trình bản gốc là cách làm với B/L. Với sea waybill, người nhận chỉ cần chứng minh mình là consignee có tên.`],
+[`It is used only in air transport`,`Vận tải hàng không dùng Air Waybill (AWB). Sea waybill dùng cho vận tải đường biển.`],
+[`It is non-negotiable, and cargo is released to the named consignee`,`Sea waybill không chuyển nhượng được, không phải chứng từ sở hữu, và hàng được giao cho người nhận hàng có tên trên chứng từ. Vì vậy nó tiện cho giao dịch giữa các bên tin nhau hoặc công ty mẹ con.`]],a:3,
+k:`Sea waybill: non-negotiable, không phải document of title, giao cho consignee có tên, không cần bản gốc.`},
+
+{id:"A14",set:"A",l:"L3",q:`In J.H. Rayner & Co. v. Hambro's Bank (1943), the L/C required "Coromandel groundnuts" but the documents stated "machine-shelled groundnut kernels". The court held that:`,o:[
+[`The bank had to pay because the goods were identical in the trade`,`Tòa không chấp nhận lập luận "trong ngành ai cũng hiểu là một". Ngân hàng chỉ so chứng từ với điều kiện L/C, không xét hàng thực tế.`],
+[`The bank should have consulted trade experts before refusing`,`Ngân hàng không có nghĩa vụ tìm hiểu thuật ngữ hay tập quán của từng ngành hàng. Nếu phải hỏi chuyên gia, L/C sẽ mất tính chắc chắn và nhanh chóng.`],
+[`The bank was entitled to refuse, because banks deal in documents and need not know trade jargon`,`Tòa xử ngân hàng được quyền từ chối. Banks deal in documents, not goods, và áp dụng nguyên tắc tuân thủ chặt chẽ (strict compliance): mô tả hàng trên chứng từ phải khớp với L/C.`],
+[`The seller could claim payment from the carrier instead`,`Người vận chuyển không có nghĩa vụ thanh toán tiền hàng. Vụ án chỉ xoay quanh nghĩa vụ của ngân hàng theo L/C.`]],a:2,
+k:`Rayner v Hambro's Bank = án lệ kinh điển về strict compliance: ngân hàng làm việc với chứng từ, không cần hiểu thuật ngữ ngành.`},
+
+{id:"A15",set:"A",l:"L3",q:`A consular invoice is:`,o:[
+[`Issued by a Chamber of Commerce to certify the origin of goods`,`Đây là mô tả của giấy chứng nhận xuất xứ (Certificate of Origin – C/O).`],
+[`Certified by the consulate or embassy of the importing country located in the exporter's country`,`Consular invoice là hóa đơn được lãnh sự quán hoặc đại sứ quán của nước nhập khẩu, đặt tại nước xuất khẩu, xác nhận.`],
+[`Issued by SGS to confirm the quality of goods`,`Đây là giấy chứng nhận giám định (inspection certificate) do tổ chức độc lập như SGS cấp.`],
+[`Prepared by the shipping line for freight calculation`,`Hãng tàu tính cước trên B/L hoặc hóa đơn cước (freight invoice), không liên quan đến consular invoice.`]],a:1,
+k:`Consular invoice: do lãnh sự nước NHẬP KHẨU đặt tại nước XUẤT KHẨU xác nhận.`},
+
+{id:"A16",set:"A",l:"L4",q:`In a documentary collection, the drawee of the bill of exchange is:`,o:[
+[`The buyer`,`Trong nhờ thu, người bán ký phát hối phiếu đòi tiền người mua, nên người mua là drawee (người bị ký phát, người phải trả tiền).`],
+[`The seller`,`Người bán là drawer, tức người ký phát hối phiếu, không phải người phải trả tiền.`],
+[`The remitting bank`,`Remitting bank là ngân hàng của người bán, chỉ làm đại lý chuyển chứng từ. Nó có thể là payee khi hối phiếu ghi "pay to the order of" ngân hàng, nhưng không phải drawee.`],
+[`The issuing bank`,`Issuing bank chỉ có trong L/C (trong L/C, drawee thường là issuing bank hoặc nominated bank). Nhờ thu không có issuing bank.`]],a:0,
+k:`Nhờ thu: drawee = người mua. L/C: drawee = ngân hàng (issuing/nominated bank).`},
+
+{id:"A17",set:"A",l:"L4",q:`When the drawee writes "Accepted" and signs a time bill, he:`,o:[
+[`Becomes the drawer of the bill`,`Drawer là người ký phát (người bán). Khi drawee ký chấp nhận, anh ta trở thành acceptor, không đổi vai thành drawer.`],
+[`Becomes a holder in due course`,`Holder in due course là người cầm hối phiếu ngay tình và có trả giá trị, tức bên được nhận tiền. Acceptor thì ngược lại, là bên phải trả tiền.`],
+[`Undertakes a primary, unconditional obligation to pay at maturity`,`Ký chấp nhận biến drawee thành acceptor, người có nghĩa vụ chính, vô điều kiện phải trả tiền khi hối phiếu đáo hạn.`],
+[`May still refuse payment automatically if the goods are defective`,`Hối phiếu độc lập với hợp đồng mua bán. Tranh chấp chất lượng phải giải quyết riêng theo hợp đồng, không tự động cho phép từ chối trả hối phiếu đã chấp nhận.`]],a:2,
+k:`Accepted = nghĩa vụ trả tiền chính và vô điều kiện. Hàng lỗi là chuyện của hợp đồng, không xóa nghĩa vụ trên hối phiếu.`},
+
+{id:"A18",set:"A",l:"L4",q:`A time bill has a face value of USD 150,000, payable in 90 days. A negotiating bank discounts it, charging USD 2,500 in total. How much does the seller receive now?`,o:[
+[`USD 147,500`,`Chiết khấu nghĩa là ngân hàng trả trước cho người bán số tiền mệnh giá trừ chi phí: 150,000 − 2,500 = 147,500. Khi đáo hạn, ngân hàng thu đủ 150,000 từ người mua.`],
+[`USD 150,000`,`Đây là số tiền người bán nhận nếu chờ đến hạn. Muốn nhận tiền ngay qua chiết khấu thì phải chịu phí.`],
+[`USD 152,500`,`Cộng phí vào là sai chiều. Phí chiết khấu do người bán trả cho ngân hàng, nên bị trừ đi.`],
+[`USD 2,500`,`Đây là phí ngân hàng thu, không phải số người bán nhận.`]],a:0,
+k:`Tiền nhận khi chiết khấu = mệnh giá − tổng phí chiết khấu.`},
+
+{id:"A19",set:"A",l:"L4",q:`A time draft is dishonoured by non-payment. To preserve the right of recourse against the drawer and endorsers (Bills of Exchange Act 1882, s.48), the holder must:`,o:[
+[`Wait 60 days for the buyer's explanation`,`Chờ đợi là sai. Chậm thông báo từ chối thanh toán sẽ giải phóng drawer và endorsers, và người cầm phiếu mất quyền truy đòi họ.`],
+[`Cancel the sales contract first`,`Hối phiếu độc lập với hợp đồng mua bán. Hủy hợp đồng không phải thủ tục để giữ quyền truy đòi trên hối phiếu.`],
+[`Return the documents to the collecting bank`,`Đây không phải thủ tục theo BEA 1882. Hơn nữa, với hối phiếu kỳ hạn theo D/A, chứng từ đã giao cho người mua từ lúc chấp nhận.`],
+[`Give prompt notice of dishonour, followed by noting and protest by a notary public`,`BEA 1882 s.48: phải thông báo ngay việc bị từ chối (notice of dishonour) cho drawer và endorsers, rồi làm thủ tục noting and protest qua công chứng viên để bảo toàn quyền truy đòi.`]],a:3,
+k:`Bị từ chối trả tiền: thông báo ngay + noting & protest qua notary public. Chậm trễ = mất quyền truy đòi.`},
+
+{id:"A20",set:"A",l:"L4",q:`Which statement is correct?`,o:[
+[`A promissory note is an order to pay involving three parties`,`Bị đảo khái niệm. Promissory note là lời hứa trả tiền (promise), chỉ có 2 bên: maker và payee. "Order, 3 parties" là hối phiếu.`],
+[`A bill of exchange is a promise to pay made by the buyer`,`Bị đảo khái niệm. Hối phiếu là lệnh trả tiền (order) do người bán (drawer) ký phát. "Promise by the buyer" là lệnh phiếu.`],
+[`A bill of exchange is an order to pay (drawer, drawee, payee); a promissory note is a promise to pay by the maker`,`Hối phiếu là lệnh trả tiền với 3 bên (drawer, drawee, payee). Lệnh phiếu là lời hứa trả tiền của người lập (maker) với 2 bên.`],
+[`Both instruments are always payable at sight`,`Cả hai đều có thể trả ngay (at sight) hoặc trả có kỳ hạn (time/usance), không phải lúc nào cũng trả ngay.`]],a:2,
+k:`B/E = ORDER, 3 bên, người bán ký phát. P/N = PROMISE, 2 bên, người mua lập.`},
+
+{id:"A21",set:"A",l:"L5",q:`Under D/A, the collecting bank releases the shipping documents when:`,o:[
+[`The buyer pays at sight`,`Trả tiền ngay để nhận chứng từ là D/P at sight (Documents against Payment).`],
+[`The buyer accepts a time draft`,`D/A (Documents against Acceptance): người mua chỉ cần ký chấp nhận hối phiếu kỳ hạn là nhận được chứng từ, rồi trả tiền khi đáo hạn.`],
+[`The goods arrive at the port of destination`,`Ngân hàng giao chứng từ theo chỉ thị nhờ thu, không phụ thuộc hàng đã về cảng hay chưa. Ngân hàng không làm việc với hàng hóa.`],
+[`The issuing bank honours the credit`,`Issuing bank và "honour the credit" là thuật ngữ của L/C. Nhờ thu không có ngân hàng phát hành.`]],a:1,
+k:`D/P = trả tiền mới lấy chứng từ. D/A = ký chấp nhận là lấy chứng từ, trả tiền sau.`},
+
+{id:"A22",set:"A",l:"L5",q:`Rank the payment methods from most secure to least secure for the exporter:`,o:[
+[`L/C > Payment in Advance > D/A > D/P > Open Account > Consignment`,`Hai chỗ sai: trả trước an toàn hơn L/C (tiền đã về trước khi giao hàng), và D/P an toàn hơn D/A (D/P chỉ giao chứng từ khi đã nhận tiền).`],
+[`Payment in Advance > L/C > D/P > D/A > Open Account > Consignment`,`Đúng thứ tự trên slide Risk & Security Spectrum. Trả trước: có tiền trước khi giao. L/C: có cam kết ngân hàng. D/P: giữ quyền kiểm soát hàng đến khi được trả. D/A: chỉ có chữ ký chấp nhận. O/A: giao cả hàng lẫn chứng từ, hoàn toàn tin người mua. Consignment: chỉ được trả khi người mua bán được hàng.`],
+[`Payment in Advance > D/P > L/C > D/A > Consignment > Open Account`,`D/P không thể an toàn hơn L/C vì nhờ thu không có cam kết trả tiền của ngân hàng. Consignment và O/A cũng bị đảo vị trí.`],
+[`L/C > D/P > Payment in Advance > Open Account > D/A > Consignment`,`Sai nhiều chỗ: trả trước phải đứng đầu, và D/A (có hối phiếu được chấp nhận) an toàn hơn Open Account.`]],a:1,
+k:`Cho người XUẤT KHẨU: Advance > L/C > D/P > D/A > O/A > Consignment. Với người nhập khẩu thì thứ tự đảo ngược.`},
+
+{id:"A23",set:"A",l:"L5",q:`Which statement about a demand draft (bank cheque) is correct?`,o:[
+[`It is drawn by the buyer on his own deposit account`,`Đây là mô tả của séc cá nhân (personal cheque). Demand draft do ngân hàng phát hành.`],
+[`It carries no bank guarantee`,`Ngược lại, demand draft do ngân hàng phát hành và ngân hàng chịu trách nhiệm trả, nên có sự bảo đảm của ngân hàng.`],
+[`The buyer can easily place a stop-payment order after issue`,`Rất khó ngừng thanh toán vì người mua đã nộp tiền cho ngân hàng trước khi phát hành.`],
+[`It is paid from the bank's own funds (pre-funded) and cannot bounce for insufficient buyer funds`,`Người mua nộp tiền trước, ngân hàng phát hành draft và trả từ tiền của chính ngân hàng. Vì vậy nó không bị trả lại do tài khoản người mua thiếu tiền.`]],a:3,
+k:`Demand draft: ngân hàng phát hành, tiền nộp trước, không bị "bounce", khó dừng thanh toán.`},
+
+{id:"A24",set:"A",l:"L5",q:`In Vietnam's payment infrastructure, SWIFT is:`,o:[
+[`A financial messaging network used mainly for cross-border banking`,`SWIFT là mạng truyền điện tài chính giữa các ngân hàng, chủ yếu cho giao dịch xuyên biên giới. Nó truyền thông điệp (lệnh), không trực tiếp chuyển tiền.`],
+[`The interbank settlement system operated by the State Bank of Vietnam`,`Đây là CITAD, hệ thống thanh toán điện tử liên ngân hàng do Ngân hàng Nhà nước vận hành.`],
+[`The retail clearing system operated by NAPAS`,`Đây là ACH, hệ thống bù trừ bán lẻ do NAPAS vận hành.`],
+[`A credit card network`,`Mạng thẻ là Visa, Mastercard, JCB... SWIFT không phải mạng thẻ.`]],a:0,
+k:`SWIFT = mạng truyền điện quốc tế. CITAD = Ngân hàng Nhà nước. ACH = NAPAS.`},
+
+{id:"A25",set:"A",l:"L5",q:`A Bank Payment Obligation (BPO, URBPO 750) differs from an L/C because:`,o:[
+[`Banks examine paper documents manually`,`Kiểm tra chứng từ giấy thủ công là đặc điểm của L/C truyền thống, chính là điều BPO thay thế.`],
+[`It is revocable at any time by the buyer`,`BPO là cam kết không hủy ngang (irrevocable) của ngân hàng nghĩa vụ (obligor bank), người mua không thể tùy ý hủy.`],
+[`It contains no bank undertaking to pay`,`BPO chính là một cam kết thanh toán của ngân hàng. Nếu không có cam kết thì nó không còn là "Bank Payment Obligation".`],
+[`It relies on electronic matching of trade data via SWIFTNet, and documents are sent directly to the buyer`,`BPO hoàn toàn điện tử: ngân hàng so khớp dữ liệu thương mại qua SWIFTNet (TSU), còn chứng từ gốc được gửi thẳng cho người mua, không qua ngân hàng.`]],a:3,
+k:`BPO = cam kết không hủy ngang như L/C, nhưng so khớp dữ liệu điện tử thay vì kiểm tra chứng từ giấy.`},
+
+/* ---------- 15 câu bổ sung ---------- */
+{id:"X1",set:"X",l:"L1",q:`The main purpose of the OECD Arrangement on Officially Supported Export Credits is to:`,o:[
+[`Set the Incoterms for government contracts`,`Incoterms do ICC ban hành, không phải OECD, và không liên quan đến tín dụng xuất khẩu.`],
+[`Prevent governments from offering excessively cheap financing to win export contracts`,`Thỏa thuận OECD đặt ra các điều kiện tối thiểu (lãi suất, thời hạn, tỷ lệ trả trước...) cho tín dụng xuất khẩu có nhà nước hỗ trợ, để doanh nghiệp cạnh tranh bằng giá, chất lượng, dịch vụ chứ không bằng tín dụng ưu đãi quá mức.`],
+[`Regulate how banks examine L/C documents`,`Việc kiểm tra chứng từ L/C do UCP 600 và ISBP của ICC điều chỉnh.`],
+[`Harmonise customs tariffs among OECD members`,`Thuế quan thuộc phạm vi WTO và các hiệp định thương mại, không phải mục tiêu của thỏa thuận này.`]],a:1,
+k:`OECD Arrangement: chống "cuộc đua" tín dụng xuất khẩu giá rẻ giữa các chính phủ.`},
+
+{id:"X2",set:"X",l:"L2",q:`"Stare decisis" is a feature of:`,o:[
+[`Common Law – courts follow past rulings on similar facts`,`Stare decisis (tuân theo tiền lệ) là nền tảng của Common Law: tòa án phải theo phán quyết trước đó cho các vụ có tình tiết tương tự.`],
+[`Civil Law – codification of rules`,`Civil Law dựa trên pháp điển hóa (bộ luật thành văn). Án lệ không có vai trò ràng buộc như trong Common Law.`],
+[`CISG – formation of contracts`,`Phần hình thành hợp đồng của CISG (Art. 14–24) nói về chào hàng và chấp nhận, không có học thuyết tuân theo án lệ.`],
+[`UCP 600 – document examination`,`UCP 600 quy định cách kiểm tra chứng từ L/C, không liên quan đến án lệ.`]],a:0,
+k:`Stare decisis = Common Law = án lệ ràng buộc.`},
+
+{id:"X3",set:"X",l:"L2",q:`Under CISG Article 14, an offer must:`,o:[
+[`Be made in writing and signed by both parties`,`CISG không yêu cầu văn bản (Art. 11). Hơn nữa, chào hàng là hành vi đơn phương của một bên, không cần cả hai bên ký.`],
+[`Be addressed to the public at large`,`Ngược lại: đề nghị gửi công chúng chỉ được coi là lời mời chào hàng (invitation to make offers), trừ khi thể hiện rõ ý khác (Art. 14(2)).`],
+[`Be addressed to specific person(s), show intent to be bound, and be sufficiently definite (quantity and price)`,`Art. 14: chào hàng phải gửi cho một hoặc nhiều người xác định, thể hiện ý định chịu ràng buộc nếu được chấp nhận, và đủ rõ ràng (nêu hàng hóa, số lượng và giá hoặc cách xác định chúng).`],
+[`Include an arbitration clause`,`Điều khoản trọng tài không phải điều kiện bắt buộc của một chào hàng.`]],a:2,
+k:`Offer theo Art. 14: người nhận xác định + ý định ràng buộc + đủ rõ ràng (hàng, số lượng, giá).`},
+
+{id:"X4",set:"X",l:"L2",q:`Under CISG Article 25, a fundamental breach is one that:`,o:[
+[`Is caused by force majeure`,`Bất khả kháng là căn cứ miễn trách nhiệm (CISG Art. 79), không phải định nghĩa của vi phạm cơ bản.`],
+[`Occurs before the contract is concluded`,`Trước khi hợp đồng hình thành thì chưa có nghĩa vụ hợp đồng để vi phạm.`],
+[`Involves any minor delay in shipment`,`Chậm trễ nhỏ thường không đủ là vi phạm cơ bản. Vi phạm phải gây thiệt hại đáng kể.`],
+[`Substantially deprives the aggrieved party of what it is entitled to expect under the contract`,`Art. 25: vi phạm cơ bản là vi phạm làm bên kia bị tước đi về cơ bản những gì họ có quyền mong đợi từ hợp đồng (trừ khi bên vi phạm không thể lường trước kết quả đó).`]],a:3,
+k:`Fundamental breach = tước đoạt cơ bản lợi ích mong đợi, cho phép bên bị vi phạm hủy hợp đồng.`},
+
+{id:"X5",set:"X",l:"L2",q:`A contract that is valid in substance but cannot be sued upon because the statute of limitations has expired is:`,o:[
+[`Void`,`Void là vô hiệu từ đầu, chưa bao giờ có hiệu lực. Ở đây hợp đồng hợp lệ về nội dung.`],
+[`Voidable`,`Voidable là hợp đồng mà một bên có quyền hủy (ví dụ thiếu năng lực, bị lừa dối, ép buộc), không phải trường hợp hết thời hiệu.`],
+[`Unenforceable`,`Hợp đồng vẫn có hiệu lực về nội dung nhưng không thể khởi kiện để cưỡng chế thực hiện vì đã hết thời hiệu khởi kiện.`],
+[`Illegal`,`Illegal là hợp đồng có nội dung hoặc mục đích trái luật.`]],a:2,
+k:`Hết thời hiệu khởi kiện = unenforceable.`},
+
+{id:"X6",set:"X",l:"L3",q:`Who may issue a Bill of Lading?`,o:[
+[`The carrier, the shipmaster, or the carrier's authorised agent`,`B/L do người vận chuyển, thuyền trưởng hoặc đại lý được người vận chuyển ủy quyền phát hành.`],
+[`The shipper`,`Shipper (người gửi hàng, thường là người xuất khẩu) là người nhận B/L từ người vận chuyển, không tự phát hành.`],
+[`The consignee`,`Consignee là người nhận hàng ở cảng đến, không phát hành B/L.`],
+[`The Chamber of Commerce`,`Phòng Thương mại cấp C/O, không phát hành chứng từ vận tải.`]],a:0,
+k:`Người phát hành B/L: carrier / master / authorised agent. Người nhận B/L: shipper.`},
+
+{id:"X7",set:"X",l:"L1",q:`Which is an example of concurrent (simultaneous) payment?`,o:[
+[`Open Account 60 days`,`O/A 60 ngày là trả sau (deferred payment): người mua nhận hàng rồi 60 ngày sau mới trả.`],
+[`D/P – Documents against Payment`,`D/P: người mua trả tiền đúng lúc nhận chứng từ để lấy hàng, nên tiền và quyền sở hữu hàng đổi cho nhau cùng lúc. Theo slide, nhóm concurrent gồm D/P, CAD, COD và consignment.`],
+[`Usance L/C 90 days`,`L/C trả chậm 90 ngày là trả sau (deferred payment).`],
+[`Payment in Advance`,`Trả trước (advance payment): tiền được trả trước khi giao hàng.`]],a:1,
+k:`Thời điểm thanh toán: advance (trước) – concurrent (đồng thời: D/P, CAD, COD) – deferred (sau: O/A, D/A, usance L/C).`},
+
+{id:"X8",set:"X",l:"L3",q:`An inspection certificate is usually issued by:`,o:[
+[`The shipping line`,`Hãng tàu phát hành B/L, không giám định chất lượng hàng.`],
+[`The importer's customs office`,`Hải quan có kiểm tra hàng cho mục đích quản lý nhà nước, nhưng chứng thư giám định trong thương mại do tổ chức độc lập cấp.`],
+[`The issuing bank`,`Ngân hàng chỉ kiểm tra chứng từ, không kiểm tra hàng hóa.`],
+[`An independent body such as SGS, Intertek, Cotecna or Bureau Veritas`,`Giấy chứng nhận giám định do tổ chức giám định độc lập như SGS, Intertek, Cotecna, Bureau Veritas cấp.`]],a:3,
+k:`Inspection certificate = tổ chức giám định độc lập (SGS, Intertek, Cotecna, BV).`},
+
+{id:"X9",set:"X",l:"L4",q:`A bill of exchange drawn in a set of two parts: when one part is paid,`,o:[
+[`The whole set is discharged`,`BEA 1882 s.71: hối phiếu lập thành bộ để phòng thất lạc khi gửi. Thanh toán một bản thì cả bộ hết hiệu lực, vì vậy mới ghi "SECOND of the same tenor and date being unpaid".`],
+[`The second part must still be paid`,`Nếu phải trả cả bản thứ hai thì người trả tiền trả hai lần cho cùng một khoản nợ. Các bản trong bộ chỉ là bản sao của cùng một nghĩa vụ.`],
+[`The bill becomes a promissory note`,`Hối phiếu không thể chuyển thành lệnh phiếu. Hai công cụ khác nhau về bản chất (order và promise).`],
+[`The drawer must issue a new set`,`Không cần phát hành bộ mới vì nghĩa vụ đã được thực hiện xong.`]],a:0,
+k:`Bộ hối phiếu (set): trả một bản = cả bộ hết hiệu lực (BEA 1882 s.71).`},
+
+{id:"X10",set:"X",l:"L4",q:`A holder in due course is a party who:`,o:[
+[`Draws the bill and orders payment`,`Đây là drawer, người ký phát hối phiếu.`],
+[`Is ordered to pay the bill`,`Đây là drawee, người bị ký phát.`],
+[`Acquires the instrument in good faith and for value, free from defects in the underlying contract`,`Holder in due course là người nhận hối phiếu ngay tình, có trả giá trị, và không bị ảnh hưởng bởi khiếm khuyết của hợp đồng gốc. Đây là lý do hối phiếu lưu thông được.`],
+[`Certifies the protest of a dishonoured bill`,`Đây là notary public, công chứng viên làm thủ tục protest.`]],a:2,
+k:`Holder in due course: ngay tình + có trả giá trị → được bảo vệ khỏi tranh chấp của hợp đồng gốc.`},
+
+{id:"X11",set:"X",l:"L5",q:`Clean payments represent approximately what share of international payment volume?`,o:[
+[`Under 20%`,`Quá thấp. Đây gần với tỷ trọng của thanh toán kèm chứng từ (documentary), không phải clean payment.`],
+[`Over 80%`,`Theo bài giảng, hơn 80% khối lượng thanh toán quốc tế là clean payment (T/T, O/A...). Lý do: thương mại nội khu vực tăng, quan hệ lâu năm giữa các bên, và SWIFT nhanh, rẻ.`],
+[`Exactly 50%`,`Không có con số chia đôi như vậy. Clean payment chiếm áp đảo.`],
+[`Under 5%`,`Quá thấp, ngược hẳn thực tế.`]],a:1,
+k:`Clean payment > 80% khối lượng: nhờ thương mại khu vực, quan hệ lâu năm, SWIFT hiệu quả.`},
+
+{id:"X12",set:"X",l:"L5",q:`The autonomy principle of letters of credit means that:`,o:[
+[`The buyer can cancel the L/C at any time`,`L/C theo UCP 600 là không hủy ngang. Người mua không thể tự ý hủy.`],
+[`The issuing bank must inspect the goods before paying`,`Ngân hàng giao dịch trên chứng từ, không phải hàng hóa (UCP 600 Art. 5). Ngân hàng không kiểm tra hàng.`],
+[`The L/C is governed by URC 522`,`L/C theo UCP 600. URC 522 là quy tắc cho nhờ thu.`],
+[`Payment depends strictly on document compliance, independent of the sales contract`,`Nguyên tắc tự chủ (autonomy/independence): L/C độc lập với hợp đồng mua bán, việc trả tiền chỉ phụ thuộc vào chứng từ có phù hợp hay không (UCP 600 Art. 4).`]],a:3,
+k:`Autonomy = L/C tách rời hợp đồng mua bán; chỉ xét chứng từ.`},
+
+{id:"X13",set:"X",l:"L5",q:`In Vietnam, the ACH system for domestic retail clearing is operated by:`,o:[
+[`NAPAS`,`ACH (Automated Clearing House) phục vụ bù trừ giao dịch bán lẻ trong nước do NAPAS vận hành.`],
+[`The State Bank of Vietnam`,`Ngân hàng Nhà nước vận hành CITAD, hệ thống thanh toán điện tử liên ngân hàng, không phải ACH.`],
+[`SWIFT`,`SWIFT là mạng truyền điện quốc tế, không vận hành hệ thống bù trừ nội địa của Việt Nam.`],
+[`Vietcombank`,`Vietcombank là ngân hàng thương mại, là thành viên tham gia hệ thống chứ không vận hành nó.`]],a:0,
+k:`ACH = NAPAS. CITAD = Ngân hàng Nhà nước. SWIFT = truyền điện quốc tế.`},
+
+{id:"X14",set:"X",l:"L5",q:`"Open Account backed by a standby L/C or demand guarantee" combines:`,o:[
+[`The security of D/P with the cost of an L/C`,`Không liên quan D/P. Cách này còn rẻ hơn L/C thương mại vì standby L/C chỉ được dùng đến khi người mua không trả.`],
+[`Payment before shipment with consignment`,`Không có yếu tố trả trước hay hàng ký gửi trong cấu trúc này.`],
+[`The speed and low cost of open account with a backup bank guarantee payable if the buyer defaults`,`Người mua vẫn trả theo O/A nhanh và rẻ. Standby L/C hoặc bảo lãnh chỉ là phương án dự phòng: nếu người mua vỡ nợ, người bán đòi ngân hàng.`],
+[`Electronic data matching with manual document checking`,`So khớp dữ liệu điện tử là đặc điểm của BPO, không phải của cấu trúc này.`]],a:2,
+k:`O/A + standby L/C: tốc độ và chi phí của O/A, an toàn nhờ bảo lãnh ngân hàng dự phòng.`},
+
+{id:"X15",set:"X",l:"L5",q:`Netting refers to an arrangement where:`,o:[
+[`The buyer pays in full before shipment`,`Đây là trả trước (payment in advance).`],
+[`Goods are placed in a warehouse in the importing country; the buyer withdraws stock as needed and settles on fixed future dates`,`Theo định nghĩa trên slide bài giảng: hàng được đặt ở kho tại nước nhập khẩu, người mua rút hàng khi cần và thanh toán vào các ngày cố định trong tương lai.`],
+[`Banks match trade data electronically via SWIFTNet`,`Đây là BPO (Bank Payment Obligation).`],
+[`The buyer pays only after reselling to end customers`,`Đây là hàng ký gửi (consignment): người mua chỉ trả khi đã bán được hàng.`]],a:1,
+k:`Phân biệt: netting (kho ở nước nhập khẩu, trả theo kỳ cố định) với consignment (bán được mới trả). Ngoài môn học, "netting" còn hay được dùng với nghĩa bù trừ công nợ hai chiều.`}
+];
+
+const ESSAYS=[
+{t:"Question 1 · 1.0 điểm",h:"Payment Clause Challenge",
+p:`<p>Read the following clause from a sales contract between Sao Mai Seafood JSC (Vietnam, Seller) and Busan Trading Co. (Korea, Buyer):</p>
+<blockquote>"30% of the contract value shall be paid by T/T within 7 days after signing the contract. The remaining 70% shall be paid by Documents against Payment (D/P) at sight through the Seller's bank, subject to ICC Uniform Rules for Collections (URC 522)."</blockquote>
+<p>Identify and briefly explain: (a) the payment method(s); (b) the payment timing; (c) which party bears more risk, and why; (d) which party bears the financial burden.</p>`,
+m:[["(a) Method","0.25","A combination of Payment in Advance (30%, technique: T/T) and Documentary Collection – D/P at sight (70%) under URC 522."],
+["(b) Timing","0.25","30%: within 7 days after signing, i.e. before shipment. 70%: at sight, when the collecting bank presents the documents to the buyer, before the buyer obtains the B/L (concurrent payment)."],
+["(c) Risk","0.25","The buyer bears risk on the 30% advance (pays before receiving goods → risk of non-delivery). For the 70%, the seller bears the risk that the buyer refuses to pay and take up the documents; however, the seller keeps control of the goods through the B/L, and the 30% deposit cushions any loss (return freight, resale, demurrage). Overall the risk is fairly balanced, slightly in the seller's favour."],
+["(d) Financial burden","0.25","Mainly the buyer: it pays 30% before shipment and the remaining 70% before receiving the goods, so it finances the goods in transit. The seller only finances 70% of production cost for a short period."]],
+vn:"Ghi chú: so với ví dụ trên lớp \"60% advance + 40% O/A 120 days\", ở đó phần trả sau là O/A (người bán không kiểm soát hàng), còn ở đây phần trả sau là D/P (người bán vẫn giữ B/L) nên an toàn hơn cho người bán."},
+{t:"Question 2 · 1.0 điểm",h:"Documentary collection case",
+p:`<p>Minh An Co. (Vietnam, Seller) sends shipping documents and a 60-day time draft through Vietcombank (remitting bank) to KB Bank in Korea (collecting bank). The collection instruction states "Documents against Acceptance". However, an additional typed note says: "Please obtain further assurance of payment before releasing documents."</p>
+<p>KB Bank finds the instructions unclear and asks Vietcombank for clarification. Before any reply arrives, KB Bank obtains the buyer's acceptance of the draft and releases the Bill of Lading. The buyer collects the goods but refuses to pay at maturity, claiming the goods were of poor quality.</p>
+<ol type="a"><li>Did KB Bank act correctly? Explain with reference to the role of banks in documentary collections. (0.5 pt)</li><li>Can the buyer refuse to pay the accepted draft because of the quality dispute? What should the holder of the draft do now? (0.5 pt)</li></ol>`,
+m:[["(a)","0.15","KB Bank acted correctly. The main instruction was clearly D/A; releasing the B/L against the buyer's acceptance of the time draft complied with that instruction."],
+["(a)","0.15","In a collection, banks act only as agents following the collection instruction (URC 522); they do not guarantee payment and do not examine documents to guess instructions."],
+["(a)","0.10","The additional note was vague and inconsistent with D/A. KB Bank acted in good faith and with reasonable care by asking Vietcombank for clarification; the remitting side failed to reply."],
+["(a)","0.10","The risk of unclear instructions falls on the principal (seller). Lesson: the seller should have issued a clear D/P instruction or a specific condition (e.g., \"release only against 20% payment\"), and followed up."],
+["(b)","0.25","The buyer cannot refuse. Under the independence principle, an accepted bill of exchange is separate from the sales contract; by accepting, the buyer took on a primary, unconditional obligation to pay at maturity. A quality dispute does not automatically cancel this obligation; it must be pursued separately under the contract."],
+["(b)","0.25","The draft is dishonoured by non-payment. The holder must immediately give notice of dishonour to the drawer/endorsers, then have it noted and protested by a notary public (BEA 1882 s.48) to preserve the right of recourse; the collecting bank should advise non-payment and the reasons without delay. Then the holder can sue the buyer on the bill."]],
+vn:"Cùng kết luận với case Interpane v. ANZ mà giảng viên đã chữa trên lớp."},
+{t:"Question 3 · 1.0 điểm",h:"Bill of exchange",
+p:`<div class="bill">BILL OF EXCHANGE No. 0215 · For USD 80,000 · Ho Chi Minh City, 1 December 2026<br>At 90 days after B/L date of this FIRST Bill of Exchange (SECOND of the same tenor and date being unpaid), pay to the order of Vietcombank the sum of US Dollars Eighty Thousand only. Value received as per Contract No. SM-BT/2026.<br>To: Busan Trading Co., Busan, Korea · For and on behalf of Sao Mai Seafood JSC (signed)</div>
+<p>The B/L is dated 1 December 2026.</p>
+<ol type="a"><li>Identify the drawer, drawee and payee. (0.3 pt)</li><li>Is this a sight draft or a time draft? Which collection method is it typically linked with? (0.2 pt)</li><li>Calculate the maturity date. (0.2 pt)</li><li>Why is it issued in a set of two, and what happens when one part is paid? Explain one difference between this instrument and a promissory note. (0.3 pt)</li></ol>`,
+m:[["(a)","0.3","Drawer: Sao Mai Seafood JSC (seller, signs the order). Drawee: Busan Trading Co. (buyer, ordered to pay). Payee: Vietcombank (\"pay to the order of\")."],
+["(b)","0.2","Time (usance) draft – payable 90 days after B/L date; typically linked with D/A (buyer accepts, receives documents, pays at maturity)."],
+["(c)","0.2","B/L date 1 Dec 2026 + 90 days → 1 March 2027. (30 ngày còn lại của tháng 12 + 31 ngày tháng 1 + 28 ngày tháng 2 = 89, nên ngày thứ 90 là 1/3/2027.)"],
+["(d)","0.3","Bills are drawn in sets to prevent loss in transit (BEA 1882 s.71); payment of one part discharges the whole set (\"SECOND … being unpaid\"). Difference: a bill of exchange is an order to pay by the drawer to the drawee (3 parties, drawn by the seller); a promissory note is a promise to pay by the maker (2 parties, made by the buyer)."]],
+vn:""}
+];
+
+/* ---------------- state ---------------- */
+const S={view:"home",mode:"practice",set:"A",run:null,reviewFilter:"all",confirmExit:false,confirmSubmit:false,essayOpen:{}};
+const byId=Object.fromEntries(BANK.map(q=>[q.id,q]));
+const LET="ABCD";
+
+function rnd(n){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}catch(e){return Math.floor(Math.random()*n)}}
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function fmtTime(sec){sec=Math.max(0,Math.round(sec));const m=Math.floor(sec/60),s=sec%60;return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
+
+function poolFor(set){return set==="all"?BANK:BANK.filter(q=>q.set===set)}
+function startRun(ids,mode){
+  stopTimer();
+  const items=shuffle(ids).map(id=>({id,order:shuffle([0,1,2,3]),pick:null}));
+  const limit=mode==="exam"?Math.ceil(items.length*1.5)*60:0;
+  S.run={mode,items,idx:0,start:Date.now(),limit,end:null,done:false};
+  S.view="quiz";S.confirmExit=false;S.confirmSubmit=false;S.reviewFilter="all";
+  if(mode==="exam")startTimer();
+  render();window.scrollTo(0,0);
+}
+let timerId=null;
+function startTimer(){timerId=setInterval(()=>{const r=S.run;if(!r||r.done)return stopTimer();const left=r.limit-(Date.now()-r.start)/1000;const el=document.getElementById("timer");if(el){el.textContent=fmtTime(left);el.classList.toggle("low",left<=60)}if(left<=0)finish()},500)}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null}}
+function finish(){const r=S.run;if(!r||r.done)return;r.done=true;r.end=Date.now();stopTimer();S.view="result";render();window.scrollTo(0,0)}
+function isRight(it){return it.pick!==null&&it.pick===byId[it.id].a}
+
+/* ---------------- render pieces ---------------- */
+function leafStub(i,n,q){return `<div class="stub"><div class="no">${String(i+1).padStart(2,"0")}</div><div class="of">/ ${String(n).padStart(2,"0")}</div><div class="les">${q.l}</div><div class="lesn">${LESSONS[q.l]}</div></div>`}
+
+function optionsHTML(it,{locked,showAnswer}){
+  const q=byId[it.id];
+  return `<div class="opts" role="list">${it.order.map((oi,pos)=>{
+    let cls="opt",mk="";
+    if(showAnswer){
+      if(oi===q.a){cls+=" right";mk="✓"}
+      else if(oi===it.pick){cls+=" wrong";mk="✗"}
+      else cls+=" dim";
+    }else if(oi===it.pick)cls+=" sel";
+    return `<button class="${cls}" data-pick="${oi}" ${locked?"disabled":""} aria-pressed="${oi===it.pick}"><span class="lt">${LET[pos]}</span><span class="tx">${esc(q.o[oi][0])}</span><span class="mk">${mk}</span></button>`}).join("")}</div>`;
+}
+
+function explainHTML(it){
+  const q=byId[it.id];const letterOf=oi=>LET[it.order.indexOf(oi)];
+  const right=it.pick===q.a,skipped=it.pick===null;
+  let v;
+  if(right)v=`<div class="verdict ok"><span class="badge">✓</span>Chính xác! Đáp án là ${letterOf(q.a)}.</div>`;
+  else if(skipped)v=`<div class="verdict skip"><span class="badge">–</span>Bạn bỏ trống câu này. Đáp án đúng là ${letterOf(q.a)}.</div>`;
+  else v=`<div class="verdict bad"><span class="badge">✗</span>Chưa đúng. Bạn chọn ${letterOf(it.pick)}, đáp án đúng là ${letterOf(q.a)}.</div>`;
+  const seq=[];
+  if(!right&&!skipped)seq.push([it.pick,"wrong","Vì sao đáp án bạn chọn sai"]);
+  seq.push([q.a,"right","Vì sao đây là đáp án đúng"]);
+  it.order.forEach(oi=>{if(oi!==q.a&&oi!==it.pick)seq.push([oi,"","Vì sao không phải đáp án này"])});
+  return `<div class="fb fade">${v}${seq.map(([oi,c,tag])=>`<div class="ex ${c}"><div class="tag">${tag}</div><span class="l">${letterOf(oi)}</span><span class="t">${esc(q.o[oi][0])}</span><div class="e">${esc(q.o[oi][1])}</div></div>`).join("")}<div class="key"><b>Cần nhớ:</b> ${esc(q.k)}</div></div>`;
+}
+
+function homeView(){
+  const n=poolFor(S.set).length;
+  const mins=Math.ceil(n*1.5);
+  return `<header class="hero"><div class="eyebrow">International Payment System · Đề thi thử giữa kỳ</div>
+  <h1>Ôn trắc nghiệm thanh toán quốc tế</h1>
+  <p>40 câu trắc nghiệm từ đề thi thử (25 câu Part A và 15 câu bổ sung), kèm giải thích cho từng đáp án. Mỗi lượt làm, thứ tự câu hỏi và thứ tự đáp án đều được xáo ngẫu nhiên.</p></header>
+
+  <div class="eyebrow section-label">Chế độ</div>
+  <div class="modes">
+    <button class="mode" data-mode="practice" aria-pressed="${S.mode==="practice"}"><span class="mt"><span class="dot"></span>Luyện tập</span><span class="md">Chọn xong là biết đúng sai ngay, kèm lời giải thích cho cả 4 đáp án. Bấm "Câu tiếp theo" để đi tiếp.</span></button>
+    <button class="mode" data-mode="exam" aria-pressed="${S.mode==="exam"}"><span class="mt"><span class="dot"></span>Thi thử</span><span class="md">Có đồng hồ đếm ngược, được đổi đáp án và nhảy giữa các câu. Nộp bài mới chấm điểm và xem giải thích.</span></button>
+  </div>
+
+  <div class="eyebrow section-label">Bộ câu hỏi</div>
+  <div class="seg">
+    <button data-set="A" aria-pressed="${S.set==="A"}">Part A <small>25 câu</small></button>
+    <button data-set="X" aria-pressed="${S.set==="X"}">Câu bổ sung <small>15 câu</small></button>
+    <button data-set="all" aria-pressed="${S.set==="all"}">Tất cả <small>40 câu</small></button>
+  </div>
+
+  <div class="start-row"><button class="btn primary" id="start">Bắt đầu làm bài</button>
+  <span class="note">${S.mode==="exam"?`Thời gian: ${mins} phút cho ${n} câu (1,5 phút/câu). Hết giờ bài tự nộp.`:`${n} câu · không giới hạn thời gian.`}</span></div>
+
+  <div class="essay-link"><p><b>Part B – Tự luận (3 điểm).</b> Xem đề 3 câu tự luận và bài mẫu theo thang điểm để tự chấm.</p><button class="btn" id="go-essay">Ôn tự luận</button></div>`;
+}
+
+function quizBar(){
+  const r=S.run,n=r.items.length;
+  const answered=r.items.filter(i=>i.pick!==null).length;
+  let right=0,wrong=0;r.items.forEach(i=>{if(i.pick!==null){isRight(i)?right++:wrong++}});
+  const prog=r.mode==="practice"?answered/n:answered/n;
+  const left=r.limit-(Date.now()-r.start)/1000;
+  return `<div class="qbar"><div class="row">
+    <span class="pill">${r.mode==="exam"?"Thi thử":"Luyện tập"}</span>
+    <span class="count">Câu <b class="mono">${r.idx+1}</b> / <span class="mono">${n}</span></span>
+    ${r.mode==="practice"?`<span class="livescore">Đúng <span class="ok mono">${right}</span> · Sai <span class="bad mono">${wrong}</span></span>`:`<span class="count">Đã làm <b class="mono">${answered}</b>/<span class="mono">${n}</span></span>`}
+    <span class="spacer"></span>
+    ${r.mode==="exam"?`<span class="timer mono ${left<=60?"low":""}" id="timer" aria-label="Thời gian còn lại">${fmtTime(left)}</span>`:""}
+    <button class="btn ghost" id="exit">${S.confirmExit?"Bấm lần nữa để thoát":"Thoát"}</button>
+  </div><div class="progress"><i style="width:${(prog*100).toFixed(1)}%"></i></div></div>`;
+}
+
+function quizView(){
+  const r=S.run,it=r.items[r.idx],q=byId[it.id],n=r.items.length;
+  const answered=it.pick!==null;
+  if(r.mode==="practice"){
+    const last=r.idx===n-1;
+    return quizBar()+`<article class="leaf fade" aria-live="polite">${leafStub(r.idx,n,q)}<div class="body">
+      <p class="qtext">${esc(q.q)}</p>
+      ${optionsHTML(it,{locked:answered,showAnswer:answered})}
+      ${answered?explainHTML(it):""}
+      <div class="nav">${answered?`<button class="btn primary" id="next">${last?"Xem kết quả":"Câu tiếp theo"}</button>`:""}
+      <span class="kbd">Phím tắt: <kbd>A</kbd>–<kbd>D</kbd> hoặc <kbd>1</kbd>–<kbd>4</kbd> để chọn, <kbd>Enter</kbd> để đi tiếp</span></div>
+    </div></article>`;
+  }
+  const unanswered=r.items.filter(i=>i.pick===null).length;
+  return quizBar()+`<article class="leaf">${leafStub(r.idx,n,q)}<div class="body">
+      <p class="qtext">${esc(q.q)}</p>
+      ${optionsHTML(it,{locked:false,showAnswer:false})}
+      <div class="nav"><button class="btn" id="prev" ${r.idx===0?"disabled":""}>← Câu trước</button>
+      ${r.idx<n-1?`<button class="btn primary" id="enext">Câu sau →</button>`:`<button class="btn primary" id="submit">Nộp bài</button>`}
+      <span class="kbd"><kbd>A</kbd>–<kbd>D</kbd> chọn · <kbd>←</kbd> <kbd>→</kbd> chuyển câu</span></div>
+    </div></article>
+    <section class="palette"><div class="row"><b>Bảng câu hỏi</b><span class="spacer"></span><div class="legend"><span class="d">Đã chọn</span><span>Chưa làm</span></div></div>
+    <div class="grid">${r.items.map((x,i)=>`<button data-go="${i}" class="${x.pick!==null?"done":""} ${i===r.idx?"cur":""}" aria-label="Câu ${i+1}">${i+1}</button>`).join("")}</div>
+    <div class="row" style="margin-top:14px"><span class="spacer"></span><button class="btn ${S.confirmSubmit?"":"primary"}" id="submit2">Nộp bài</button></div>
+    ${S.confirmSubmit?`<div class="confirm">${unanswered?`<div>Bạn còn <b>${unanswered} câu chưa làm</b>. Câu bỏ trống tính là sai.</div>`:`<div>Bạn đã làm hết ${n} câu.</div>`}<div class="row"><button class="btn primary" id="submit-yes">Nộp bài và chấm điểm</button><button class="btn ghost" id="submit-no">Làm tiếp</button></div></div>`:""}
+    </section>`;
+}
+
+function resultView(){
+  const r=S.run,n=r.items.length;
+  const right=r.items.filter(isRight).length;
+  const pct=right/n;const ten=(pct*10);
+  const used=((r.end||Date.now())-r.start)/1000;
+  const C=2*Math.PI*54;
+  let msg=pct>=.9?"Rất vững, sẵn sàng đi thi.":pct>=.7?"Khá tốt, ôn lại các câu sai là ổn.":pct>=.5?"Tạm được, cần ôn thêm các bài còn yếu.":"Cần ôn lại kỹ lý thuyết trước khi thi.";
+  const byL={};r.items.forEach(it=>{const l=byId[it.id].l;byL[l]=byL[l]||[0,0];byL[l][1]++;if(isRight(it))byL[l][0]++});
+  const wrongIds=r.items.filter(i=>!isRight(i)).map(i=>i.id);
+  const list=r.items.map((it,i)=>[it,i]).filter(([it])=>S.reviewFilter==="all"||!isRight(it));
+  return `<div class="eyebrow" style="margin-bottom:10px">${r.mode==="exam"?"Kết quả thi thử":"Kết quả luyện tập"}</div>
+  <section class="score"><div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--line)" stroke-width="10"/><circle cx="60" cy="60" r="54" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${(C*pct).toFixed(1)} ${C.toFixed(1)}"/></svg><div class="v"><div><b class="mono">${right}/${n}</b><small>câu đúng</small></div></div></div>
+  <div class="stats"><h2>${msg}</h2><p>Bỏ trống tính là sai.</p><div class="nums"><span>Điểm hệ 10: <b>${ten.toFixed(1)}</b></span>${r.items.length===25&&r.items.every(i=>byId[i.id].set==="A")?`<span>Quy đổi Part A: <b>${(pct*7).toFixed(2)}/7</b></span>`:""}<span>Thời gian: <b>${fmtTime(used)}</b></span></div></div></section>
+  <section class="bylesson"><b>Theo bài học</b>${Object.keys(LESSONS).filter(l=>byL[l]).map(l=>`<div class="lrow"><span>${l} · ${LESSONS[l]}</span><span class="bar"><i style="width:${(byL[l][0]/byL[l][1]*100).toFixed(0)}%"></i></span><span class="n">${byL[l][0]}/${byL[l][1]}</span></div>`).join("")}</section>
+  <div class="res-actions">${wrongIds.length?`<button class="btn primary" id="retry-wrong">Làm lại ${wrongIds.length} câu sai</button>`:""}<button class="btn ${wrongIds.length?"":"primary"}" id="again">Làm lượt mới (xáo lại)</button><button class="btn ghost" id="home">Về trang chính</button></div>
+  <div class="review-head"><h2 style="font-size:20px">Xem lại bài làm</h2><div class="seg"><button data-filter="all" aria-pressed="${S.reviewFilter==="all"}">Tất cả <small>${n}</small></button><button data-filter="wrong" aria-pressed="${S.reviewFilter==="wrong"}">Câu sai <small>${wrongIds.length}</small></button></div></div>
+  <div class="review">${list.length?list.map(([it,i])=>{const q=byId[it.id];return `<article class="leaf">${leafStub(i,n,q)}<div class="body"><p class="qtext">${esc(q.q)}</p>${optionsHTML(it,{locked:true,showAnswer:true})}${explainHTML(it)}</div></article>`}).join(""):`<div class="empty">Không có câu sai nào. Làm tốt lắm!</div>`}</div>`;
+}
+
+function essayView(){
+  return `<div class="row" style="margin-bottom:18px"><button class="btn ghost" id="home">← Trang chính</button></div>
+  <header class="hero"><div class="eyebrow">Part B · Essay · 3 điểm</div><h1>Ôn tự luận</h1><p>Tự viết câu trả lời ra giấy trước, sau đó mở bài mẫu để so và tự chấm theo thang điểm.</p></header>
+  <div class="essay">${ESSAYS.map((e,i)=>`<article class="leaf"><div class="stub"><div class="no">Q${i+1}</div><div class="of">1.0 pt</div></div><div class="body">
+  <div class="eyebrow">${esc(e.t)}</div><h3 style="font-size:19px;margin:4px 0 12px">${esc(e.h)}</h3><div class="prompt">${e.p}</div>
+  <button class="btn ${S.essayOpen[i]?"":"primary"}" data-essay="${i}">${S.essayOpen[i]?"Ẩn bài mẫu":"Hiện bài mẫu và thang điểm"}</button>
+  ${S.essayOpen[i]?`<div class="model fade">${e.m.map(([k,s,t])=>`<div class="pt"><span class="k">${esc(k)}</span><div>${esc(t)}</div><span class="s">${s} đ</span></div>`).join("")}${e.vn?`<div class="vn">${esc(e.vn)}</div>`:""}</div>`:""}
+  </div></article>`).join("")}</div>`;
+}
+
+/* ---------------- render + events ---------------- */
+const app=document.getElementById("app");
+function render(){
+  app.innerHTML=S.view==="home"?homeView():S.view==="quiz"?quizView():S.view==="result"?resultView():essayView();
+}
+function pick(oi){
+  const r=S.run;if(!r||r.done)return;const it=r.items[r.idx];
+  if(r.mode==="practice"){if(it.pick!==null)return;it.pick=oi}
+  else it.pick=oi;
+  S.confirmExit=false;render();
+}
+function nextQ(){const r=S.run;if(r.idx<r.items.length-1){r.idx++;S.confirmExit=false;render();window.scrollTo({top:0})}else finish()}
+function go(i){const r=S.run;r.idx=Math.max(0,Math.min(r.items.length-1,i));S.confirmExit=false;render();window.scrollTo({top:0})}
+
+app.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.mode){S.mode=b.dataset.mode;return render()}
+  if(b.dataset.set){S.set=b.dataset.set;return render()}
+  if(b.dataset.filter){S.reviewFilter=b.dataset.filter;return render()}
+  if(b.dataset.essay!==undefined){const i=+b.dataset.essay;S.essayOpen[i]=!S.essayOpen[i];return render()}
+  if(b.dataset.pick!==undefined)return pick(+b.dataset.pick);
+  if(b.dataset.go!==undefined){S.confirmSubmit=false;return go(+b.dataset.go)}
+  switch(b.id){
+    case "start":return startRun(poolFor(S.set).map(q=>q.id),S.mode);
+    case "go-essay":S.view="essay";render();return window.scrollTo(0,0);
+    case "home":stopTimer();S.view="home";S.run=null;render();return window.scrollTo(0,0);
+    case "exit":if(S.confirmExit){stopTimer();S.view="home";S.run=null;S.confirmExit=false}else S.confirmExit=true;return render();
+    case "next":return nextQ();
+    case "enext":return go(S.run.idx+1);
+    case "prev":return go(S.run.idx-1);
+    case "submit":case "submit2":S.confirmSubmit=true;render();{const c=document.querySelector(".confirm");c&&c.scrollIntoView({block:"center",behavior:"smooth"})}return;
+    case "submit-no":S.confirmSubmit=false;return render();
+    case "submit-yes":return finish();
+    case "retry-wrong":{const ids=S.run.items.filter(i=>!isRight(i)).map(i=>i.id);return startRun(ids,S.run.mode)}
+    case "again":{const ids=S.run.items.map(i=>i.id);return startRun(ids,S.run.mode)}
+  }
+});
+
+document.addEventListener("keydown",e=>{
+  if(S.view!=="quiz"||e.metaKey||e.ctrlKey||e.altKey)return;
+  const r=S.run,it=r.items[r.idx];const k=e.key.toLowerCase();
+  let pos=-1;if("abcd".includes(k)&&k.length===1)pos="abcd".indexOf(k);else if("1234".includes(k)&&k.length===1)pos=+k-1;
+  if(pos>=0){e.preventDefault();return pick(it.order[pos])}
+  if(r.mode==="practice"&&(k==="enter"||k==="arrowright")&&it.pick!==null){e.preventDefault();return nextQ()}
+  if(r.mode==="exam"){if(k==="arrowright"){e.preventDefault();go(r.idx+1)}else if(k==="arrowleft"){e.preventDefault();go(r.idx-1)}}
+});
+
+render();
+</script>
+
+</body></html>
